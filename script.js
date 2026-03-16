@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- MODO DE DESENVOLVIMENTO ---
-    const DEV_MODE = true;
+    const DEV_MODE = false;
 
     // --- DADOS DAS CARTINHAS ---
     const lettersData = [
