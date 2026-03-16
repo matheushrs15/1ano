@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feliz 1 Ano De Namoro</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body class="">
+    <!-- TELA DE LOGIN -->
+    <section id="login-screen">
+        <div class="login-container">
+            <h1 id="stage-title">Suspeitou das letras aleatórias nas cartinhas desse último ano juntos?</h1>
+            <p id="stage-subtitle" class="subtitle">Acerte a senha que vai se surpreender</p>
+            <p id="stage-indicator" class="stage-indicator">Etapa 1 de 4</p>
+            <form id="login-form">
+                <input type="text" id="password-input" placeholder="Digite a senha aqui" autocomplete="off" maxlength="5">
+                <button type="submit">Entrar</button>
+            </form>
+            <p id="error-message" class="hidden">Ops...senha errada KKKKKKKKKKKKKKKKKKK TENTE OUTRA</p>
+            <button id="hint-button">Vai precisar de uma dica né?</button>
+            <div id="hint-text" class="hidden">
+                <p id="hint-paragraph">As peças já estão com você. Cada uma recebeu seu valor em um dia especial. A ordem da senha é a mesma ordem em que você recebeu as cartinhas, da mais antiga para a mais recente. 💌</p>
+            </div>
+        </div>
+    </section>
+
+    <div id="transition-overlay"></div>
+
+    <!-- TELA DE CONTEÚDO -->
+    <section id="content-screen" class="hidden">
+        <div id="background-hearts"></div>
+        <div class="content-wrapper">
+            <div class="left-column">
+                <!-- ÁLBUM DE FOTOS -->
+                <div class="gallery-container">
+                    <div class="gallery-image-wrapper">
+                        <img id="gallery-image" src="" alt="Nossa Foto">
+                        <button id="prev-photo" class="gallery-nav">❮</button>
+                        <button id="next-photo" class="gallery-nav">❯</button>
+                        <button id="zoom-button" class="gallery-zoom-btn"><i class="fa-solid fa-expand"></i></button>
+                    </div>
+                    <p id="photo-counter">1 / 17</p>
+                </div>
+
+                <!-- PLAYER DE MÚSICA -->
+                <div class="music-player">
+                    <p id="song-title">Nossa Trilha Sonora</p>
+                    <div class="progress-container" id="progress-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                    <div class="time-container">
+                        <span id="current-time">0:00</span>
+                        <span id="total-duration">0:00</span>
+                    </div>
+                    <div class="controls">
+                        <button id="prev-song" class="player-btn"><i class="fas fa-backward-step"></i></button>
+                        <button id="play-pause-song" class="player-btn play-btn"><i class="fas fa-play"></i></button>
+                        <button id="next-song" class="player-btn"><i class="fas fa-forward-step"></i></button>
+                        <div id="volume-container" class="volume-container">
+                            <i class="fa-solid fa-volume-high volume-icon"></i>
+                            <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.75">
+                        </div>
+                    </div>
+                    <audio id="audio-player"></audio>
+                </div>
+            </div>
+
+            <!-- CONTAINER DAS CARTINHAS -->
+            <div class="main-text-container">
+                <div id="letters-container"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODAL DE FOTOS -->
+    <div id="photo-modal" class="photo-modal-overlay hidden">
+        <button id="modal-close" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+        <button id="modal-prev" class="modal-nav-btn">❮</button>
+        <img id="modal-image" src="" alt="Foto Ampliada">
+        <button id="modal-next" class="modal-nav-btn">❯</button>
+    </div>
+
+    <!-- MODAL DAS CARTINHAS -->
+    <div id="letter-modal" class="letter-modal-overlay hidden">
+        <div class="letter-modal-content">
+            <button id="modal-letter-close" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+            <h2 id="modal-letter-title"></h2>
+            <p class="modal-letter-meta">
+                <span id="modal-letter-date"></span> | Símbolo: <strong id="modal-letter-char"></strong>
+            </p>
+            <div id="modal-letter-text"></div>
+        </div>
+    </div>    
+
+    <!-- QR CODE E LINK MOBILE -->
+    <a id="qr-code-link" href="https://scanned.page/p/R4JRuf" target="_blank" class="hidden">
+        <img src="images/qrcode.png" alt="QR Code com a cifra para decodificar">
+    </a>
+    <a id="cipher-link-mobile" href="https://scanned.page/p/R4JRuf" target="_blank" class="hidden">
+        <i class="fa-solid fa-key"></i> Acessar Decodificador
+    </a>
+    
+    <script src="script.js"></script>
+</body>
+</html>
