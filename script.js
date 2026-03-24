@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const transitionOverlay = document.getElementById('transition-overlay');
     const qrCodeLink = document.getElementById('qr-code-link');
     const cipherLinkMobile = document.getElementById('cipher-link-mobile');
+    const galleryImageWrapper = document.querySelector('.gallery-image-wrapper');
+    const slidesContainer = document.getElementById('slides-container');
+    const gallerySlideImages = slidesContainer.querySelectorAll('.gallery-slide-image');
     const galleryImage = document.getElementById('gallery-image');
     const prevPhotoButton = document.getElementById('prev-photo');
     const nextPhotoButton = document.getElementById('next-photo');
@@ -148,12 +151,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- ESTADO INICIAL ---
     let currentPhotoIndex = 0;
     let currentSongIndex = 0;
-    let photoInterval;
+    let photoInterval; // Para o slideshow automático
+    let isSliding = false; // Flag para evitar cliques rápidos durante a transição
 
-    // --- LÓGICA PRINCIPAL DE INICIALIZAÇÃO (AGORA COM CHECAGEM DO LOCALSTORAGE) ---
-    // Verifica se o enigma já foi resolvido neste dispositivo
+    // --- LÓGICA PRINCIPAL DE INICIALIZAÇÃO ---
     const enigmaPreviouslySolved = localStorage.getItem(ENIGMA_SOLVED_KEY) === 'true';
-
     if (DEV_MODE || enigmaPreviouslySolved) {
         console.warn('MODO DE DESENVOLVIMENTO ou ENIGMA JÁ RESOLVIDO ATIVADO. O LOGIN FOI IGNORADO.');
         bypassLogin();
@@ -243,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initMusicPlayer();
         playSong();
         setInterval(createHeart, 300);
-        initGallery();
+        initGallery(); // Esta função foi reescrita
         generateLetterCards();
     }
 
@@ -323,86 +325,117 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- LÓGICA DA GALERIA DE FOTOS ---
+    // --- LÓGICA DA GALERIA DE FOTOS (REESCRITA PARA SLIDE) ---
+
     function initGallery() {
-        updateGallery();
+        // Inicializa as 3 imagens do slide
+        updateSlideImages(currentPhotoIndex);
+        // Posiciona o slide para mostrar a imagem do meio
+        slidesContainer.style.transform = 'translateX(-33.33%)';
+
+        // Navegação manual (botões)
         nextPhotoButton.addEventListener('click', () => {
-            showNextPhoto();
-            resetPhotoInterval();
+            if (!isSliding) {
+                isSliding = true;
+                showNextPhoto();
+                resetPhotoInterval();
+            }
         });
         prevPhotoButton.addEventListener('click', () => {
-            showPrevPhoto();
-            resetPhotoInterval();
+            if (!isSliding) {
+                isSliding = true;
+                showPrevPhoto();
+                resetPhotoInterval();
+            }
         });
+
+        // Inicia o slideshow automático
         resetPhotoInterval();
+
+        // Listeners para o modal de zoom (agora abre a imagem atual)
         zoomButton.addEventListener('click', openModal);
         modalClose.addEventListener('click', closeModal);
         photoModal.addEventListener('click', (e) => {
             if (e.target === photoModal) { closeModal(); }
         });
+
+        // Navegação dentro do modal de zoom
         modalNext.addEventListener('click', () => {
-            showNextPhoto();
-            updateModalImage();
+            showNextPhoto(); // Avança a foto no carrossel principal
+            updateModalImage(); // Atualiza a imagem no modal
         });
         modalPrev.addEventListener('click', () => {
-            showPrevPhoto();
-            updateModalImage();
+            showPrevPhoto(); // Volta a foto no carrossel principal
+            updateModalImage(); // Atualiza a imagem no modal
         });
+
+        // Navegação por teclado
         document.addEventListener('keydown', (e) => {
-            if (photoModal.classList.contains('hidden')) { return; }
-            if (e.key === 'Escape') { closeModal(); }
-            if (e.key === 'ArrowRight') { showNextPhoto(); updateModalImage(); }
-            if (e.key === 'ArrowLeft') { showPrevPhoto(); updateModalImage(); }
+            if (!photoModal.classList.contains('hidden')) { // Se o modal de fotos estiver aberto
+                if (e.key === 'Escape') { closeModal(); }
+                if (e.key === 'ArrowRight') { showNextPhoto(); updateModalImage(); }
+                if (e.key === 'ArrowLeft') { showPrevPhoto(); updateModalImage(); }
+            }
         });
     }
-    
-    function updateGallery() {
-        galleryImage.style.opacity = 0; // 1. Inicia a transição para a imagem atual sumir (opacity de 1 para 0)
 
-        // 2. Após o tempo total da transição de "sumir", trocamos a imagem e a fazemos aparecer
-        setTimeout(() => {
-            const newImageSrc = `images/${currentPhotoIndex + 1}.jpg`;
-            
-            // Pré-carrega a nova imagem em um elemento temporário para garantir que ela esteja pronta
-            const tempImg = new Image();
-            tempImg.src = newImageSrc;
+    // Função para atualizar as fontes das 3 imagens do slide
+    function updateSlideImages(index) {
+        // Garante que o índice não saia dos limites, mas pode ser negativo para o "anterior"
+        const getPhotoSrc = (idx) => {
+            if (idx < 0) idx = TOTAL_PHOTOS - 1; // Volta para a última
+            if (idx >= TOTAL_PHOTOS) idx = 0;    // Vai para a primeira
+            return `images/${idx + 1}.jpg`;
+        };
 
-            tempImg.onload = () => {
-                // Quando a nova imagem estiver totalmente carregada, atualiza a imagem real da galeria
-                galleryImage.src = newImageSrc;
-                photoCounter.textContent = `${currentPhotoIndex + 1} / ${TOTAL_PHOTOS}`;
-                galleryImage.style.opacity = 1; // 3. Faz a nova imagem (já carregada) aparecer suavemente (opacity de 0 para 1)
-            };
-            
-            // Caso a imagem não carregue (erro), ainda tenta exibir e fazer o fade-in
-            tempImg.onerror = () => {
-                console.error(`Falha ao carregar a imagem: ${newImageSrc}`);
-                galleryImage.src = newImageSrc;
-                photoCounter.textContent = `${currentPhotoIndex + 1} / ${TOTAL_PHOTOS}`;
-                galleryImage.style.opacity = 1;
-            };
+        gallerySlideImages[0].src = getPhotoSrc(index - 1); // Imagem anterior
+        gallerySlideImages[1].src = getPhotoSrc(index);     // Imagem atual
+        gallerySlideImages[2].src = getPhotoSrc(index + 1); // Imagem próxima
 
-        }, 700); // CORREÇÃO: Este tempo deve ser o tempo COMPLETO da transição do CSS (0.7s = 700ms)
+        photoCounter.textContent = `${index + 1} / ${TOTAL_PHOTOS}`;
     }
 
     function showNextPhoto() {
-        currentPhotoIndex = (currentPhotoIndex + 1) % TOTAL_PHOTOS;
-        updateGallery();
+        slidesContainer.style.transition = 'transform 0.5s ease-in-out'; // Garante a transição
+        slidesContainer.style.transform = 'translateX(-66.66%)'; // Desliza para a próxima imagem (a terceira)
+
+        // Após a transição, atualiza o índice e "reseta" a posição do slide
+        setTimeout(() => {
+            currentPhotoIndex = (currentPhotoIndex + 1) % TOTAL_PHOTOS;
+            updateSlideImages(currentPhotoIndex); // Atualiza as fontes das 3 imagens
+            slidesContainer.style.transition = 'none'; // Desliga a transição para o "snap back"
+            slidesContainer.style.transform = 'translateX(-33.33%)'; // Volta para a posição central
+            isSliding = false; // Permite novos cliques
+        }, 500); // Tempo igual à duração da transição CSS
     }
 
     function showPrevPhoto() {
-        currentPhotoIndex = (currentPhotoIndex - 1 + TOTAL_PHOTOS) % TOTAL_PHOTOS;
-        updateGallery();
+        slidesContainer.style.transition = 'transform 0.5s ease-in-out'; // Garante a transição
+        slidesContainer.style.transform = 'translateX(0%)'; // Desliza para a imagem anterior (a primeira)
+
+        // Após a transição, atualiza o índice e "reseta" a posição do slide
+        setTimeout(() => {
+            currentPhotoIndex = (currentPhotoIndex - 1 + TOTAL_PHOTOS) % TOTAL_PHOTOS;
+            updateSlideImages(currentPhotoIndex); // Atualiza as fontes das 3 imagens
+            slidesContainer.style.transition = 'none'; // Desliga a transição para o "snap back"
+            slidesContainer.style.transform = 'translateX(-33.33%)'; // Volta para a posição central
+            isSliding = false; // Permite novos cliques
+        }, 500); // Tempo igual à duração da transição CSS
     }
 
     function resetPhotoInterval() {
         clearInterval(photoInterval);
-        photoInterval = setInterval(showNextPhoto, PHOTO_INTERVAL_MS);
+        photoInterval = setInterval(() => {
+            if (!isSliding) { // Só avança se não estiver em transição manual
+                isSliding = true; // Define como em transição para o auto-slide
+                showNextPhoto();
+            }
+        }, PHOTO_INTERVAL_MS);
     }
 
     function openModal() {
-        clearInterval(photoInterval);
-        updateModalImage();
+        clearInterval(photoInterval); // Pausa o slideshow
+        modalImage.src = `images/${currentPhotoIndex + 1}.jpg`; // Abre a imagem atual no modal
         photoModal.classList.remove('hidden');
         body.classList.add('modal-open');
     }
@@ -410,7 +443,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function closeModal() {
         photoModal.classList.add('hidden');
         body.classList.remove('modal-open');
-        resetPhotoInterval();
+        resetPhotoInterval(); // Reinicia o slideshow
     }
 
     function updateModalImage() {

@@ -40,12 +40,18 @@
                 <!-- ÁLBUM DE FOTOS -->
                 <div class="gallery-container">
                     <div class="gallery-image-wrapper">
-                        <img id="gallery-image" src="" alt="Nossa Foto">
+                        <div id="slides-container" class="slides-container">
+                            <!-- As imagens serão adicionadas aqui dinamicamente pelo JavaScript -->
+                            <!-- Deixamos um placeholder para o CSS de imagem básica -->
+                            <img class="gallery-slide-image" src="" alt="Nossa Foto Anterior">
+                            <img class="gallery-slide-image" src="" alt="Nossa Foto Atual">
+                            <img class="gallery-slide-image" src="" alt="Nossa Foto Próxima">
+                        </div>
                         <button id="prev-photo" class="gallery-nav">❮</button>
                         <button id="next-photo" class="gallery-nav">❯</button>
                         <button id="zoom-button" class="gallery-zoom-btn"><i class="fa-solid fa-expand"></i></button>
                     </div>
-                    <p id="photo-counter">1 / 17</p>
+                    <p id="photo-counter">1 / 37</p>
                 </div>
 
                 <!-- PLAYER DE MÚSICA -->

@@ -225,18 +225,34 @@ button:hover {
 .gallery-image-wrapper {
     position: relative;
     margin-bottom: 15px;
-    overflow: hidden;
+    overflow: hidden; /* ESSENCIAL: Cria a janela de visualização para o slide */
+    border-radius: 12px; /* Borda arredondada para o container principal da galeria */
+    background-color: #ffe7e4fd; /* Fundo para quando as imagens estiverem carregando */
+    height: 400px; /* Altura fixa para a área do carrossel */
+    display: flex; /* Para alinhar o slides-container */
+    align-items: center; /* Centraliza verticalmente o slide se necessário */
 }
 
-#gallery-image {
-    width: 100%;
-    height: 400px;
-    object-fit: contain;
-    border-radius: 8px;
-    transition: opacity 0.7s ease-in-out;
-    background-color: #ffe7e4fd;
+/* NOVO: Container que guarda as imagens e será deslizado */
+#slides-container {
+    display: flex; /* Para colocar as imagens lado a lado */
+    width: 300%; /* Cada imagem tem 100%, então 3 imagens ocupam 300% */
+    height: 100%;
+    transition: transform 0.5s ease-in-out; /* Transição suave do slide */
+    transform: translateX(-33.33%); /* Inicia mostrando a imagem do meio (a atual) */
+    flex-shrink: 0; /* Impede que o container encolha */
 }
 
+/* NOVO: Estilo para cada imagem dentro do slides-container */
+.gallery-slide-image {
+    width: 33.33%; /* Cada imagem ocupa 1/3 da largura do slides-container */
+    height: 100%;
+    object-fit: contain; /* Mantém a proporção da imagem */
+    flex-shrink: 0; /* Impede que as imagens encolham */
+    display: block; /* Remove espaços extras */
+}
+
+/* Estilos para os botões de navegação (já existentes, mas verifique o z-index) */
 .gallery-nav {
     position: absolute;
     top: 50%;
@@ -250,6 +266,7 @@ button:hover {
     border-radius: 50%;
     opacity: 0;
     transition: opacity 0.3s ease, background-color 0.3s ease;
+    z-index: 10; /* Garante que os botões fiquem por cima das imagens */
 }
 
 .is-mobile .gallery-nav {
