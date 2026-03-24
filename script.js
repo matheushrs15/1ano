@@ -357,12 +357,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function updateGallery() {
+        // 1. Esconde a imagem atual com uma transição suave (opacity: 0)
         galleryImage.style.opacity = 0;
+
+        // 2. Após o tempo da transição de "sumir", troca a imagem e a faz aparecer
         setTimeout(() => {
             galleryImage.src = `images/${currentPhotoIndex + 1}.jpg`;
-            galleryImage.style.opacity = 1;
             photoCounter.textContent = `${currentPhotoIndex + 1} / ${TOTAL_PHOTOS}`;
-        }, 300);
+            galleryImage.style.opacity = 1; // Faz a nova imagem aparecer suavemente (opacity: 1)
+        }, 350); // CORREÇÃO: Este tempo deve ser a METADE da transição do CSS (0.7s / 2 = 0.35s = 350ms)
     }
 
     function showNextPhoto() {
