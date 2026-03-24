@@ -3,6 +3,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- MODO DE DESENVOLVIMENTO ---
     const DEV_MODE = false;
 
+    // --- NOVO: CHAVE PARA ARMAZENAMENTO LOCAL ---
+    const ENIGMA_SOLVED_KEY = 'enigmaSolved'; // Chave que guardaremos no navegador
+
     // --- DADOS DAS CARTINHAS ---
     const lettersData = [
         {
@@ -61,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
             password: 'WKGT7',
             title: 'Impressionante! Você chegou longe.',
             subtitle: 'Agora o enigma se aprofunda. A ordem não é mais tão óbvia.',
-            hint: 'O tempo foi a chave para as primeiras senhas, mas agora, o segredo está no valor de cada dia. Pegue a data completa de cada uma das cinco cartinhas especiais. Some cada dígito que forma o dia, o mês e o ano para encontrar seu verdadeiro valor numérico. A sequência correta é uma escalada: comece pelo símbolo com o menor valor e suba até o maior. Você está quase lá. Esse enigma é uma prova do quanto cada momento conta. ✨'
+            hint: 'O tempo foi a chave para as primeiras senhas, mas agora, o segredo está no valor de cada dia. Pegue a data completa de cada um dos cinco momentos especiais. Some cada dígito que forma o dia, o mês e o ano para encontrar seu verdadeiro valor numérico. A sequência correta é uma escalada: comece pelo símbolo com o menor valor e suba até o maior. Você está quase lá. O último enigma é uma prova do quanto cada momento conta. ✨'
         },
         {
             password: 'BXCNO',
@@ -147,9 +150,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentSongIndex = 0;
     let photoInterval;
 
-    // --- LÓGICA PRINCIPAL DE INICIALIZAÇÃO ---
-    if (DEV_MODE) {
-        console.warn('MODO DE DESENVOLVIMENTO ATIVADO. O LOGIN FOI IGNORADO.');
+    // --- LÓGICA PRINCIPAL DE INICIALIZAÇÃO (AGORA COM CHECAGEM DO LOCALSTORAGE) ---
+    // Verifica se o enigma já foi resolvido neste dispositivo
+    const enigmaPreviouslySolved = localStorage.getItem(ENIGMA_SOLVED_KEY) === 'true';
+
+    if (DEV_MODE || enigmaPreviouslySolved) {
+        console.warn('MODO DE DESENVOLVIMENTO ou ENIGMA JÁ RESOLVIDO ATIVADO. O LOGIN FOI IGNORADO.');
         bypassLogin();
     } else {
         initializeLogin();
@@ -171,6 +177,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (userInput === correctPassword) {
                 currentStage++;
                 if (currentStage > stages.length) {
+                    // Se completou a última etapa, registra no localStorage
+                    localStorage.setItem(ENIGMA_SOLVED_KEY, 'true');
                     showContent();
                 } else {
                     goToNextStage();
