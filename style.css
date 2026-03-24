@@ -501,6 +501,7 @@ body.modal-open {
     overflow: hidden;
 }
 
+/* --- MODAL DE FOTOS (LIGHTBOX) --- */
 .photo-modal-overlay {
     position: fixed;
     top: 0;
@@ -529,6 +530,7 @@ body.modal-open {
     border-radius: 4px;
     transform: scale(0.8);
     transition: transform 0.3s ease;
+    z-index: 1; /* CORREÇÃO: Garante que a imagem fique abaixo dos botões de navegação */
 }
 
 .photo-modal-overlay:not(.hidden) #modal-image {
@@ -545,6 +547,7 @@ body.modal-open {
     border: none;
     cursor: pointer;
     padding: 10px;
+    z-index: 10; /* Garante que o botão de fechar esteja sempre por cima */
 }
 
 .modal-nav-btn {
@@ -559,10 +562,23 @@ body.modal-open {
     padding: 15px 20px;
     border-radius: 8px;
     transition: background-color 0.2s ease;
+    z-index: 5; /* CORREÇÃO: Garante que os botões de navegação estejam por cima da imagem */
+    opacity: 0; /* Começa invisível, como os botões da galeria principal */
 }
 
 .modal-nav-btn:hover {
     background: rgba(0, 0, 0, 0.5);
+}
+
+/* CORREÇÃO: Torna os botões de navegação do modal visíveis no mobile */
+.is-mobile .modal-nav-btn {
+    opacity: 0.7; /* Visível no mobile por padrão */
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Garante que os botões apareçam no hover em desktop */
+.photo-modal-overlay:not(.hidden):hover .modal-nav-btn {
+    opacity: 1;
 }
 
 #modal-prev { left: 15px; }
