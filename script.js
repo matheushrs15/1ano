@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const DEV_MODE = false;
 
     // --- NOVO: CHAVE PARA ARMAZENAMENTO LOCAL ---
-    const ENIGMA_SOLVED_KEY = 'enigmaSolved'; // Chave que guardaremos no navegador
+    const ENIGMA_SOLVED_KEY = 'enigmaSolved';
 
     // --- DADOS DAS CARTINHAS ---
     const lettersData = [
@@ -117,7 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const galleryImageWrapper = document.querySelector('.gallery-image-wrapper');
     const slidesContainer = document.getElementById('slides-container');
     const gallerySlideImages = slidesContainer.querySelectorAll('.gallery-slide-image');
-    const galleryImage = document.getElementById('gallery-image');
     const prevPhotoButton = document.getElementById('prev-photo');
     const nextPhotoButton = document.getElementById('next-photo');
     const photoCounter = document.getElementById('photo-counter');
@@ -151,11 +150,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- ESTADO INICIAL ---
     let currentPhotoIndex = 0;
     let currentSongIndex = 0;
-    let photoInterval; // Para o slideshow automático
+    let photoInterval;
     let isSliding = false; // Flag para evitar cliques rápidos durante a transição
 
-    // --- LÓGICA PRINCIPAL DE INICIALIZAÇÃO ---
+    // --- LÓGICA PRINCIPAL DE INICIALIZAÇÃO (AGORA COM CHECAGEM DO LOCALSTORAGE) ---
     const enigmaPreviouslySolved = localStorage.getItem(ENIGMA_SOLVED_KEY) === 'true';
+
     if (DEV_MODE || enigmaPreviouslySolved) {
         console.warn('MODO DE DESENVOLVIMENTO ou ENIGMA JÁ RESOLVIDO ATIVADO. O LOGIN FOI IGNORADO.');
         bypassLogin();
@@ -179,7 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (userInput === correctPassword) {
                 currentStage++;
                 if (currentStage > stages.length) {
-                    // Se completou a última etapa, registra no localStorage
                     localStorage.setItem(ENIGMA_SOLVED_KEY, 'true');
                     showContent();
                 } else {
@@ -245,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initMusicPlayer();
         playSong();
         setInterval(createHeart, 300);
-        initGallery(); // Esta função foi reescrita
+        initGallery();
         generateLetterCards();
     }
 
@@ -328,10 +327,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- LÓGICA DA GALERIA DE FOTOS (REESCRITA PARA SLIDE) ---
 
     function initGallery() {
+        if (!slidesContainer || gallerySlideImages.length === 0) {
+            console.error('Erro: Elementos do carrossel não encontrados no HTML.');
+            return; // Interrompe se os elementos não forem encontrados
+        }
+
         // Inicializa as 3 imagens do slide
         updateSlideImages(currentPhotoIndex);
         // Posiciona o slide para mostrar a imagem do meio
         slidesContainer.style.transform = 'translateX(-33.33%)';
+        slidesContainer.style.transition = 'none'; // Garante que a posição inicial não tenha transição
 
         // Navegação manual (botões)
         nextPhotoButton.addEventListener('click', () => {
@@ -362,29 +367,29 @@ document.addEventListener('DOMContentLoaded', () => {
         // Navegação dentro do modal de zoom
         modalNext.addEventListener('click', () => {
             showNextPhoto(); // Avança a foto no carrossel principal
-            updateModalImage(); // Atualiza a imagem no modal
+            modalImage.src = `images/${currentPhotoIndex + 1}.jpg`; // Atualiza a imagem no modal
         });
         modalPrev.addEventListener('click', () => {
             showPrevPhoto(); // Volta a foto no carrossel principal
-            updateModalImage(); // Atualiza a imagem no modal
+            modalImage.src = `images/${currentPhotoIndex + 1}.jpg`; // Atualiza a imagem no modal
         });
 
         // Navegação por teclado
         document.addEventListener('keydown', (e) => {
             if (!photoModal.classList.contains('hidden')) { // Se o modal de fotos estiver aberto
                 if (e.key === 'Escape') { closeModal(); }
-                if (e.key === 'ArrowRight') { showNextPhoto(); updateModalImage(); }
-                if (e.key === 'ArrowLeft') { showPrevPhoto(); updateModalImage(); }
+                if (e.key === 'ArrowRight') { showNextPhoto(); modalImage.src = `images/${currentPhotoIndex + 1}.jpg`; }
+                if (e.key === 'ArrowLeft') { showPrevPhoto(); modalImage.src = `images/${currentPhotoIndex + 1}.jpg`; }
             }
         });
     }
 
     // Função para atualizar as fontes das 3 imagens do slide
     function updateSlideImages(index) {
-        // Garante que o índice não saia dos limites, mas pode ser negativo para o "anterior"
         const getPhotoSrc = (idx) => {
-            if (idx < 0) idx = TOTAL_PHOTOS - 1; // Volta para a última
-            if (idx >= TOTAL_PHOTOS) idx = 0;    // Vai para a primeira
+            // Garante que o índice não saia dos limites (loop infinito)
+            if (idx < 0) idx = TOTAL_PHOTOS - 1;
+            if (idx >= TOTAL_PHOTOS) idx = 0;
             return `images/${idx + 1}.jpg`;
         };
 
@@ -396,13 +401,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showNextPhoto() {
-        slidesContainer.style.transition = 'transform 0.5s ease-in-out'; // Garante a transição
+        if (isSliding) return;
+        isSliding = true;
+
+        currentPhotoIndex = (currentPhotoIndex + 1) % TOTAL_PHOTOS; // Atualiza o índice IMEDIATAMENTE
+
+        slidesContainer.style.transition = 'transform 0.5s ease-in-out';
         slidesContainer.style.transform = 'translateX(-66.66%)'; // Desliza para a próxima imagem (a terceira)
 
-        // Após a transição, atualiza o índice e "reseta" a posição do slide
         setTimeout(() => {
-            currentPhotoIndex = (currentPhotoIndex + 1) % TOTAL_PHOTOS;
-            updateSlideImages(currentPhotoIndex); // Atualiza as fontes das 3 imagens
+            updateSlideImages(currentPhotoIndex); // Atualiza as fontes das 3 imagens com o NOVO índice
             slidesContainer.style.transition = 'none'; // Desliga a transição para o "snap back"
             slidesContainer.style.transform = 'translateX(-33.33%)'; // Volta para a posição central
             isSliding = false; // Permite novos cliques
@@ -410,13 +418,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showPrevPhoto() {
-        slidesContainer.style.transition = 'transform 0.5s ease-in-out'; // Garante a transição
+        if (isSliding) return;
+        isSliding = true;
+
+        currentPhotoIndex = (currentPhotoIndex - 1 + TOTAL_PHOTOS) % TOTAL_PHOTOS; // Atualiza o índice IMEDIATAMENTE
+
+        slidesContainer.style.transition = 'transform 0.5s ease-in-out';
         slidesContainer.style.transform = 'translateX(0%)'; // Desliza para a imagem anterior (a primeira)
 
-        // Após a transição, atualiza o índice e "reseta" a posição do slide
         setTimeout(() => {
-            currentPhotoIndex = (currentPhotoIndex - 1 + TOTAL_PHOTOS) % TOTAL_PHOTOS;
-            updateSlideImages(currentPhotoIndex); // Atualiza as fontes das 3 imagens
+            updateSlideImages(currentPhotoIndex); // Atualiza as fontes das 3 imagens com o NOVO índice
             slidesContainer.style.transition = 'none'; // Desliga a transição para o "snap back"
             slidesContainer.style.transform = 'translateX(-33.33%)'; // Volta para a posição central
             isSliding = false; // Permite novos cliques
@@ -427,8 +438,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearInterval(photoInterval);
         photoInterval = setInterval(() => {
             if (!isSliding) { // Só avança se não estiver em transição manual
-                isSliding = true; // Define como em transição para o auto-slide
-                showNextPhoto();
+                showNextPhoto(); // showNextPhoto já define isSliding = true
             }
         }, PHOTO_INTERVAL_MS);
     }
@@ -446,9 +456,8 @@ document.addEventListener('DOMContentLoaded', () => {
         resetPhotoInterval(); // Reinicia o slideshow
     }
 
-    function updateModalImage() {
-        modalImage.src = `images/${currentPhotoIndex + 1}.jpg`;
-    }
+    // A função updateModalImage não é mais necessária, pois a lógica foi integrada diretamente em openModal e navegação
+    // function updateModalImage() { /* ... */ } 
 
     // --- LÓGICA DO PLAYER DE MÚSICA E VOLUME ---
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || ('ontouchstart' in document.documentElement);
@@ -489,7 +498,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function initMusicPlayer() {
         loadSong(currentSongIndex);
         playPauseButton.addEventListener('click', () => {
-            if (audioPlayer.paused) { playSong(); } else { pauseSong(); }
+            const isPlaying = audioPlayer.paused;
+            if (isPlaying) {
+                playSong();
+            } else {
+                pauseSong();
+            }
         });
         nextSongButton.addEventListener('click', playNextSong);
         prevSongButton.addEventListener('click', playPrevSong);
@@ -515,7 +529,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }).catch(() => {
                 playPauseIcon.classList.remove('fa-pause');
                 playPauseIcon.classList.add('fa-play');
-});
+            });
         }
     }
 
@@ -555,8 +569,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function setTotalDuration() {
         totalDurationEl.textContent = formatTime(audioPlayer.duration);
     }
-
-
 
     function setProgress(e) {
         const width = this.clientWidth;
