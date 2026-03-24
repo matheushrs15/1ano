@@ -357,15 +357,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function updateGallery() {
-        // 1. Esconde a imagem atual com uma transição suave (opacity: 0)
-        galleryImage.style.opacity = 0;
+        galleryImage.style.opacity = 0; // 1. Inicia a transição para a imagem atual sumir (opacity de 1 para 0)
 
-        // 2. Após o tempo da transição de "sumir", troca a imagem e a faz aparecer
+        // 2. Após o tempo total da transição de "sumir", trocamos a imagem e a fazemos aparecer
         setTimeout(() => {
-            galleryImage.src = `images/${currentPhotoIndex + 1}.jpg`;
-            photoCounter.textContent = `${currentPhotoIndex + 1} / ${TOTAL_PHOTOS}`;
-            galleryImage.style.opacity = 1; // Faz a nova imagem aparecer suavemente (opacity: 1)
-        }, 350); // CORREÇÃO: Este tempo deve ser a METADE da transição do CSS (0.7s / 2 = 0.35s = 350ms)
+            const newImageSrc = `images/${currentPhotoIndex + 1}.jpg`;
+            
+            // Pré-carrega a nova imagem em um elemento temporário para garantir que ela esteja pronta
+            const tempImg = new Image();
+            tempImg.src = newImageSrc;
+
+            tempImg.onload = () => {
+                // Quando a nova imagem estiver totalmente carregada, atualiza a imagem real da galeria
+                galleryImage.src = newImageSrc;
+                photoCounter.textContent = `${currentPhotoIndex + 1} / ${TOTAL_PHOTOS}`;
+                galleryImage.style.opacity = 1; // 3. Faz a nova imagem (já carregada) aparecer suavemente (opacity de 0 para 1)
+            };
+            
+            // Caso a imagem não carregue (erro), ainda tenta exibir e fazer o fade-in
+            tempImg.onerror = () => {
+                console.error(`Falha ao carregar a imagem: ${newImageSrc}`);
+                galleryImage.src = newImageSrc;
+                photoCounter.textContent = `${currentPhotoIndex + 1} / ${TOTAL_PHOTOS}`;
+                galleryImage.style.opacity = 1;
+            };
+
+        }, 700); // CORREÇÃO: Este tempo deve ser o tempo COMPLETO da transição do CSS (0.7s = 700ms)
     }
 
     function showNextPhoto() {
