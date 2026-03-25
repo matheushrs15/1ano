@@ -123,6 +123,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const stageIndicator = document.getElementById('stage-indicator');
     const hintParagraph = document.getElementById('hint-paragraph');
     const transitionOverlay = document.getElementById('transition-overlay');
+    const qrCodeLink = document.getElementById('qr-code-link');
+    const cipherLinkMobile = document.getElementById('cipher-link-mobile');
     const galleryImageWrapper = document.querySelector('.gallery-image-wrapper');
     const slidesContainer = document.getElementById('slides-container');
     const gallerySlideImages = slidesContainer.querySelectorAll('.gallery-slide-image');
@@ -217,6 +219,9 @@ document.addEventListener('DOMContentLoaded', () => {
             stageSubtitle.textContent = nextStageData.subtitle;
             stageIndicator.textContent = `Etapa ${currentStage} de 4`;
             hintParagraph.textContent = nextStageData.hint;
+
+            // REMOVIDO: Lógica de mostrar/esconder QR code/botão mobile (já feito)
+
             passwordInput.value = '';
             errorMessage.classList.add('hidden');
             hintText.classList.add('hidden');
@@ -227,6 +232,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showContent() {
+        // REMOVIDO: Lógica de esconder QR code/botão mobile (já feito)
+        
         loginScreen.style.opacity = '0';
         setTimeout(() => {
             loginScreen.classList.add('hidden');
@@ -294,11 +301,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         letterModal.classList.remove('hidden');
         body.classList.add('modal-open');
+        // NOVO: Adiciona um estado ao histórico do navegador
+        history.pushState({ modal: 'letter' }, '');
     }
 
     function closeLetterModal() {
         letterModal.classList.add('hidden');
         body.classList.remove('modal-open');
+        // NÃO faz history.back() aqui. O popstate já lidou com isso.
     }
 
     lettersContainer.addEventListener('click', (e) => {
@@ -321,59 +331,49 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- LÓGICA DA GALERIA DE FOTOS (REESCRITA PARA SLIDE) ---
-
+    // --- LÓGICA DA GALERIA DE FOTOS ---
     function initGallery() {
         if (!slidesContainer || gallerySlideImages.length === 0) {
             console.error('Erro: Elementos do carrossel não encontrados no HTML.');
-            return; // Interrompe se os elementos não forem encontrados
+            return;
         }
 
-        // Inicializa as 3 imagens do slide
         updateSlideImages(currentPhotoIndex);
-        // Posiciona o slide para mostrar a imagem do meio
         slidesContainer.style.transform = 'translateX(-33.33%)';
-        slidesContainer.style.transition = 'none'; // Garante que a posição inicial não tenha transição
+        slidesContainer.style.transition = 'none';
 
-        // Navegação manual (botões)
         nextPhotoButton.addEventListener('click', () => {
             if (!isSliding) {
-                isSliding = true;
                 showNextPhoto();
                 resetPhotoInterval();
             }
         });
         prevPhotoButton.addEventListener('click', () => {
             if (!isSliding) {
-                isSliding = true;
                 showPrevPhoto();
                 resetPhotoInterval();
             }
         });
 
-        // Inicia o slideshow automático
         resetPhotoInterval();
 
-        // Listeners para o modal de zoom (agora abre a imagem atual)
         zoomButton.addEventListener('click', openModal);
         modalClose.addEventListener('click', closeModal);
         photoModal.addEventListener('click', (e) => {
             if (e.target === photoModal) { closeModal(); }
         });
 
-        // Navegação dentro do modal de zoom
         modalNext.addEventListener('click', () => {
-            showNextPhoto(); // Avança a foto no carrossel principal
-            modalImage.src = `images/${currentPhotoIndex + 1}.jpg`; // Atualiza a imagem no modal
+            showNextPhoto();
+            modalImage.src = `images/${currentPhotoIndex + 1}.jpg`;
         });
         modalPrev.addEventListener('click', () => {
-            showPrevPhoto(); // Volta a foto no carrossel principal
-            modalImage.src = `images/${currentPhotoIndex + 1}.jpg`; // Atualiza a imagem no modal
+            showPrevPhoto();
+            modalImage.src = `images/${currentPhotoIndex + 1}.jpg`;
         });
 
-        // Navegação por teclado
         document.addEventListener('keydown', (e) => {
-            if (!photoModal.classList.contains('hidden')) { // Se o modal de fotos estiver aberto
+            if (!photoModal.classList.contains('hidden')) {
                 if (e.key === 'Escape') { closeModal(); }
                 if (e.key === 'ArrowRight') { showNextPhoto(); modalImage.src = `images/${currentPhotoIndex + 1}.jpg`; }
                 if (e.key === 'ArrowLeft') { showPrevPhoto(); modalImage.src = `images/${currentPhotoIndex + 1}.jpg`; }
@@ -381,18 +381,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Função para atualizar as fontes das 3 imagens do slide
     function updateSlideImages(index) {
         const getPhotoSrc = (idx) => {
-            // Garante que o índice não saia dos limites (loop infinito)
             if (idx < 0) idx = TOTAL_PHOTOS - 1;
             if (idx >= TOTAL_PHOTOS) idx = 0;
             return `images/${idx + 1}.jpg`;
         };
 
-        gallerySlideImages[0].src = getPhotoSrc(index - 1); // Imagem anterior
-        gallerySlideImages[1].src = getPhotoSrc(index);     // Imagem atual
-        gallerySlideImages[2].src = getPhotoSrc(index + 1); // Imagem próxima
+        gallerySlideImages[0].src = getPhotoSrc(index - 1);
+        gallerySlideImages[1].src = getPhotoSrc(index);
+        gallerySlideImages[2].src = getPhotoSrc(index + 1);
 
         photoCounter.textContent = `${index + 1} / ${TOTAL_PHOTOS}`;
     }
@@ -401,60 +399,56 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isSliding) return;
         isSliding = true;
 
-        currentPhotoIndex = (currentPhotoIndex + 1) % TOTAL_PHOTOS; // Atualiza o índice IMEDIATAMENTE
+        currentPhotoIndex = (currentPhotoIndex + 1) % TOTAL_PHOTOS;
 
         slidesContainer.style.transition = 'transform 0.5s ease-in-out';
-        slidesContainer.style.transform = 'translateX(-66.66%)'; // Desliza para a próxima imagem (a terceira)
+        slidesContainer.style.transform = 'translateX(-66.66%)';
 
         setTimeout(() => {
-            updateSlideImages(currentPhotoIndex); // Atualiza as fontes das 3 imagens com o NOVO índice
-            slidesContainer.style.transition = 'none'; // Desliga a transição para o "snap back"
-            slidesContainer.style.transform = 'translateX(-33.33%)'; // Volta para a posição central
-            isSliding = false; // Permite novos cliques
-        }, 500); // Tempo igual à duração da transição CSS
+            updateSlideImages(currentPhotoIndex);
+            slidesContainer.style.transition = 'none';
+            slidesContainer.style.transform = 'translateX(-33.33%)';
+            isSliding = false;
+        }, 500);
     }
 
     function showPrevPhoto() {
         if (isSliding) return;
         isSliding = true;
 
-        currentPhotoIndex = (currentPhotoIndex - 1 + TOTAL_PHOTOS) % TOTAL_PHOTOS; // Atualiza o índice IMEDIATAMENTE
+        currentPhotoIndex = (currentPhotoIndex - 1 + TOTAL_PHOTOS) % TOTAL_PHOTOS;
 
         slidesContainer.style.transition = 'transform 0.5s ease-in-out';
-        slidesContainer.style.transform = 'translateX(0%)'; // Desliza para a imagem anterior (a primeira)
+        slidesContainer.style.transform = 'translateX(0%)';
 
         setTimeout(() => {
-            updateSlideImages(currentPhotoIndex); // Atualiza as fontes das 3 imagens com o NOVO índice
-            slidesContainer.style.transition = 'none'; // Desliga a transição para o "snap back"
-            slidesContainer.style.transform = 'translateX(-33.33%)'; // Volta para a posição central
-            isSliding = false; // Permite novos cliques
-        }, 500); // Tempo igual à duração da transição CSS
+            updateSlideImages(currentPhotoIndex);
+            slidesContainer.style.transition = 'none';
+            slidesContainer.style.transform = 'translateX(-33.33%)';
+            isSliding = false;
+        }, 500);
     }
 
     function resetPhotoInterval() {
         clearInterval(photoInterval);
-        photoInterval = setInterval(() => {
-            if (!isSliding) { // Só avança se não estiver em transição manual
-                showNextPhoto(); // showNextPhoto já define isSliding = true
-            }
-        }, PHOTO_INTERVAL_MS);
+        photoInterval = setInterval(showNextPhoto, PHOTO_INTERVAL_MS);
     }
 
     function openModal() {
-        clearInterval(photoInterval); // Pausa o slideshow
-        modalImage.src = `images/${currentPhotoIndex + 1}.jpg`; // Abre a imagem atual no modal
+        clearInterval(photoInterval);
+        modalImage.src = `images/${currentPhotoIndex + 1}.jpg`;
         photoModal.classList.remove('hidden');
         body.classList.add('modal-open');
+        // NOVO: Adiciona um estado ao histórico do navegador
+        history.pushState({ modal: 'photo' }, '');
     }
 
     function closeModal() {
         photoModal.classList.add('hidden');
         body.classList.remove('modal-open');
-        resetPhotoInterval(); // Reinicia o slideshow
+        resetPhotoInterval();
+        // NÃO faz history.back() aqui. O popstate já lidou com isso.
     }
-
-    // A função updateModalImage não é mais necessária, pois a lógica foi integrada diretamente em openModal e navegação
-    // function updateModalImage() { /* ... */ } 
 
     // --- LÓGICA DO PLAYER DE MÚSICA E VOLUME ---
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || ('ontouchstart' in document.documentElement);
@@ -573,4 +567,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const duration = audioPlayer.duration;
         audioPlayer.currentTime = (clickX / width) * duration;
     }
+
+    // --- NOVO: Listener global para o botão "Voltar" do navegador ---
+    window.addEventListener('popstate', (event) => {
+        // Prioriza fechar o modal de cartinha se estiver aberto
+        if (!letterModal.classList.contains('hidden')) {
+            closeLetterModal();
+            // Empurra um novo estado para o histórico para "anular" o popstate original
+            // e evitar que o navegador tente ir mais para trás.
+            history.pushState(null, '', location.href); 
+        } 
+        // Senão, verifica se o modal de foto está aberto e o fecha
+        else if (!photoModal.classList.contains('hidden')) {
+            closeModal();
+            // Empurra um novo estado para o histórico pelo mesmo motivo.
+            history.pushState(null, '', location.href);
+        }
+        // Se nenhum modal estava aberto, o popstate deve seguir o fluxo normal do navegador.
+        // Para este projeto, se não há modal, estamos na tela de conteúdo.
+        // Um "voltar" aqui faria a página tentar ir para a tela de login (que está hidden) ou sair do site.
+        // Não queremos interceptar se não há modal, então deixamos o popstate agir normalmente se não fechamos um modal.
+    });
+
 });
