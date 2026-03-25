@@ -12,7 +12,18 @@ document.addEventListener('DOMContentLoaded', () => {
             title: 'O Início de Tudo',
             character: 'G',
             date: '28 de Maio de 2024',
-            text: `<p>Aqui você vai colar o texto completo da primeira cartinha, a cartinha que continha a letra 'G'.</p><p>Pode ter múltiplos parágrafos.</p>`
+            text: `<p>Amor da minha vida,</p>
+<p>Hoje completamos 2 meses de namoro. Lembro como se fosse ontem aquela sexta-feira… o frio na barriga enquanto preparava tudo para o pedido, o momento em que fui na loja do Jaime escolher nossas alianças, o dia em que fui à casa dos seus pais pedir a permissão deles para começarmos uma vida juntos, a surpresinha que eu queria fazer junto com as alianças, o que eu iria dizer pra você… Enfim, lembro de tudo como se fosse ontem. Ao mesmo tempo, parece que você está presente na minha vida há muito mais tempo. Hoje, já não me vejo sem você. Você se tornou parte essencial da minha vida.</p>
+<p>É sempre bom lembrar do que deu início à nossa história — como aquele stories que você postou nos melhores amigos, e eu estava lá. Respondi, começamos a conversar sem parar, como se fôssemos grandes amigos de longa data. Logo pegamos intimidade e nossas conversas ficaram bobas e leves.</p>
+<p>E aquele dia do Garage? Que incrível! Saímos todo mundo junto, aproveitamos e comemos bem. No fim da noite, te dei carona até a casa dos seus avós, mas você não foi embora direto. Ficamos ali no carro, em frente à casa deles, conversando mais um tempinho... até que nos beijamos pela primeira vez. Que dia memorável.</p>
+<p>E o acampamento? Aqueles dias foram dos mais importantes da minha vida. Uma grande virada de chave — foi ali que percebi que algo grande estava acontecendo comigo. Foi lá que eu decidi que você seria MINHA. Como muitos diziam: tivemos um acampamento à parte — pra mim, só você importava, e pra você, só eu importava.</p>
+<p>E o dia do sushi, logo depois do acampamento… foi naquela noite que tivemos nosso primeiro encontro. Lembro do frio na barriga para ter coragem de segurar sua mão. Quando finalmente segurei, lembro do seu rosto até hoje — o rosto mais feliz, junto com o meu.</p>
+<p>E no pós-acampamento, na igreja, a gente sentados lado a lado, disfarçando um toque físico da maneira que conseguíamos, sem deixar muito exposto, porque naquele momento ainda não tínhamos nada sério.</p>
+<p>Depois disso, fomos nos encontrando, nos apaixonando mais e mais, conversando a todo momento... até o dia 28 de março de 2025.</p>
+<p>E como eu te disse naquele dia: "e toda história precisa de um começo", aquele foi o nosso. E hoje estamos aqui, comemorando 2 meses de namoro.</p>
+<p>Hoje eu te entrego essa cartinha, para o amor da minha vida, pra relembrar um pouco do nosso começo. Que você guarde ela para o resto de nossas vidas, para sempre lembrarmos da nossa trajetória juntos.</p>
+<p>Essa cartinha é uma declaração do meu amor por você — mesmo sem conseguir expressar tudo em palavras — e do quanto você significa pra mim.</p>
+<p>Eu te amo.</p>`
         },
         {
             title: 'O Valor dos Detalhes',
