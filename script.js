@@ -112,8 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const stageIndicator = document.getElementById('stage-indicator');
     const hintParagraph = document.getElementById('hint-paragraph');
     const transitionOverlay = document.getElementById('transition-overlay');
-    const qrCodeLink = document.getElementById('qr-code-link');
-    const cipherLinkMobile = document.getElementById('cipher-link-mobile');
     const galleryImageWrapper = document.querySelector('.gallery-image-wrapper');
     const slidesContainer = document.getElementById('slides-container');
     const gallerySlideImages = slidesContainer.querySelectorAll('.gallery-slide-image');
@@ -208,15 +206,6 @@ document.addEventListener('DOMContentLoaded', () => {
             stageSubtitle.textContent = nextStageData.subtitle;
             stageIndicator.textContent = `Etapa ${currentStage} de 4`;
             hintParagraph.textContent = nextStageData.hint;
-
-            if (currentStage === 4) {
-                qrCodeLink.classList.remove('hidden');
-                cipherLinkMobile.classList.remove('hidden');
-            } else {
-                qrCodeLink.classList.add('hidden');
-                cipherLinkMobile.classList.add('hidden');
-            }
-
             passwordInput.value = '';
             errorMessage.classList.add('hidden');
             hintText.classList.add('hidden');
@@ -227,9 +216,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showContent() {
-        qrCodeLink.classList.add('hidden');
-        cipherLinkMobile.classList.add('hidden');
-        
         loginScreen.style.opacity = '0';
         setTimeout(() => {
             loginScreen.classList.add('hidden');
