@@ -1,4 +1,3 @@
-/* --- GERAL & FONTES --- */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;600&display=swap');
 
 :root {
@@ -90,7 +89,6 @@ h1, h2 {
     display: none !important;
 }
 
-/* --- TELA DE LOGIN --- */
 #login-screen {
     width: 100%;
     display: flex;
@@ -190,7 +188,6 @@ button:hover {
     border-radius: 4px;
 }
 
-/* --- TELA DE CONTEÚDO --- */
 #content-screen {
     width: 100%;
     max-width: 1200px;
@@ -217,7 +214,6 @@ button:hover {
     grid-column: 1 / 2;
 }
 
-/* ÁLBUM DE FOTOS */
 .gallery-container {
     text-align: center;
 }
@@ -225,34 +221,31 @@ button:hover {
 .gallery-image-wrapper {
     position: relative;
     margin-bottom: 15px;
-    overflow: hidden; /* ESSENCIAL: Cria a janela de visualização para o slide */
-    border-radius: 12px; /* Borda arredondada para o container principal da galeria */
-    background-color: #ffe7e4fd; /* Fundo para quando as imagens estiverem carregando */
-    height: 400px; /* Altura fixa para a área do carrossel */
-    display: flex; /* Para alinhar o slides-container */
-    align-items: center; /* Centraliza verticalmente o slide se necessário */
+    overflow: hidden;
+    border-radius: 12px;
+    background-color: #ffe7e4fd;
+    height: 400px;
+    display: flex;
+    align-items: center;
 }
 
-/* NOVO: Container que guarda as imagens e será deslizado */
 #slides-container {
-    display: flex; /* Para colocar as imagens lado a lado */
-    width: 300%; /* Cada imagem tem 100%, então 3 imagens ocupam 300% */
+    display: flex;
+    width: 300%;
     height: 100%;
-    transition: transform 0.5s ease-in-out; /* Transição suave do slide */
-    transform: translateX(-33.33%); /* Inicia mostrando a imagem do meio (a atual) */
-    flex-shrink: 0; /* Impede que o container encolha */
+    transition: transform 0.5s ease-in-out;
+    transform: translateX(-33.33%);
+    flex-shrink: 0;
 }
 
-/* NOVO: Estilo para cada imagem dentro do slides-container */
 .gallery-slide-image {
-    width: 33.33%; /* Cada imagem ocupa 1/3 da largura do slides-container */
+    width: 33.33%;
     height: 100%;
-    object-fit: contain; /* Mantém a proporção da imagem */
-    flex-shrink: 0; /* Impede que as imagens encolham */
-    display: block; /* Remove espaços extras */
+    object-fit: contain;
+    flex-shrink: 0;
+    display: block;
 }
 
-/* Estilos para os botões de navegação (já existentes, mas verifique o z-index) */
 .gallery-nav {
     position: absolute;
     top: 50%;
@@ -266,7 +259,7 @@ button:hover {
     border-radius: 50%;
     opacity: 0;
     transition: opacity 0.3s ease, background-color 0.3s ease;
-    z-index: 10; /* Garante que os botões fiquem por cima das imagens */
+    z-index: 10;
 }
 
 .is-mobile .gallery-nav {
@@ -314,7 +307,6 @@ button:hover {
     opacity: 0.7;
 }
 
-/* PLAYER DE MÚSICA */
 .music-player {
     background: var(--white);
     padding: 25px;
@@ -363,7 +355,6 @@ button:hover {
     gap: 25px;
 }
 
-/* 1. Base para todos os botões (Transparente por padrão) */
 .player-btn {
     background: transparent !important;
     border: none;
@@ -379,14 +370,12 @@ button:hover {
     align-items: center;
 }
 
-/* 2. Regra de transparência para os botões de avançar/voltar no clique/foco */
 .player-btn:focus, 
 .player-btn:active {
     background: transparent !important;
     outline: none;
 }
 
-/* 3. Hover apenas para Desktop nos botões de avançar/voltar */
 @media (hover: hover) {
     .player-btn:hover {
         color: var(--primary-red);
@@ -395,8 +384,6 @@ button:hover {
     }
 }
 
-/* 4. EXCEÇÃO: Botão de Play (Sempre Vermelho) */
-/* Usamos seletores combinados para garantir que o vermelho vença o transparente */
 .play-btn, 
 .player-btn.play-btn,
 .player-btn.play-btn:focus, 
@@ -407,7 +394,7 @@ button:hover {
     width: 55px;
     height: 55px;
     box-shadow: 0 4px 10px rgba(192, 57, 43, 0.3);
-    transform: scale(1); /* Reset de escala base */
+    transform: scale(1);
 }
 
 .play-btn:hover {
@@ -416,12 +403,10 @@ button:hover {
     color: var(--white) !important;
 }
 
-/* Evita que o clique pegue no ícone e mude a cor */
 .player-btn i {
     pointer-events: none;
 }
 
-/* --- ESTRUTURA DAS CARTINHAS --- */
 .main-text-container {
     grid-column: 2 / 3;
 }
@@ -429,16 +414,16 @@ button:hover {
 #letters-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 30px; /* Aumentado levemente para respirar melhor */
+    gap: 30px;
     width: 100%;
 }
 
 .letter-card {
     background: #fff;
-    border-radius: 15px; /* Bordas um pouco mais arredondadas */
+    border-radius: 15px;
     padding: 30px 20px;
     text-align: center;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03); /* Sombra do card mais suave */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
     cursor: pointer;
@@ -465,7 +450,7 @@ button:hover {
 .letter-card h3 {
     font-family: 'Playfair Display', serif;
     font-size: 1.25rem;
-    color: #444; /* Cinza escuro elegante em vez de preto total */
+    color: #444;
     min-height: 3.5rem;
     display: flex;
     align-items: center;
@@ -475,10 +460,10 @@ button:hover {
 }
 
 .letter-card .envelope-icon {
-    font-size: 4.5rem; /* Um pouco maior como na imagem */
-    color: #f2d1d1; /* Cinza bem clarinho e limpo */
+    font-size: 4.5rem;
+    color: #f2d1d1;
     margin-top: 5px;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05)); /* Sombra leve no próprio envelope */
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));
 }
 
 .wax-seal {
@@ -495,7 +480,6 @@ button:hover {
     align-items: center;
     color: var(--white);
     font-size: 1.8rem;
-    /* Sombra mais marcante e branca ao redor como na sua versão anterior */
     box-shadow: 0 8px 20px rgba(0,0,0,0.2); 
     border: 5px solid #fff;
     transition: all 0.3s ease;
@@ -508,7 +492,6 @@ button:hover {
     box-shadow: 0 10px 25px rgba(192, 57, 43, 0.3);
 }
 
-/* --- MODAIS E EXTRAS --- */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
@@ -518,7 +501,6 @@ body.modal-open {
     overflow: hidden;
 }
 
-/* --- MODAL DE FOTOS (LIGHTBOX) --- */
 .photo-modal-overlay {
     position: fixed;
     top: 0;
@@ -547,7 +529,7 @@ body.modal-open {
     border-radius: 4px;
     transform: scale(0.8);
     transition: transform 0.3s ease;
-    z-index: 1; /* CORREÇÃO: Garante que a imagem fique abaixo dos botões de navegação */
+    z-index: 1;
 }
 
 .photo-modal-overlay:not(.hidden) #modal-image {
@@ -564,7 +546,7 @@ body.modal-open {
     border: none;
     cursor: pointer;
     padding: 10px;
-    z-index: 10; /* Garante que o botão de fechar esteja sempre por cima */
+    z-index: 10;
 }
 
 .modal-nav-btn {
@@ -579,21 +561,19 @@ body.modal-open {
     padding: 15px 20px;
     border-radius: 8px;
     transition: background-color 0.2s ease;
-    z-index: 5; /* CORREÇÃO: Garante que os botões de navegação estejam por cima da imagem */
-    opacity: 0; /* Começa invisível, como os botões da galeria principal */
+    z-index: 5;
+    opacity: 0;
 }
 
 .modal-nav-btn:hover {
     background: rgba(0, 0, 0, 0.5);
 }
 
-/* CORREÇÃO: Torna os botões de navegação do modal visíveis no mobile */
 .is-mobile .modal-nav-btn {
-    opacity: 0.7; /* Visível no mobile por padrão */
+    opacity: 0.7;
     background-color: rgba(0, 0, 0, 0.5);
 }
 
-/* Garante que os botões apareçam no hover em desktop */
 .photo-modal-overlay:not(.hidden):hover .modal-nav-btn {
     opacity: 1;
 }
@@ -717,7 +697,6 @@ body.modal-open {
     pointer-events: all;
 }
 
-/* --- RESPONSIVIDADE --- */
 @media (max-width: 992px) {
     body { overflow-y: auto; }
     .content-wrapper { grid-template-columns: 1fr; }

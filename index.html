@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body class="">
-    <!-- TELA DE LOGIN -->
     <section id="login-screen">
         <div class="login-container">
             <h1 id="stage-title">Suspeitou das letras aleatórias nas cartinhas desse último ano juntos?</h1>
@@ -31,18 +30,13 @@
     </section>
 
     <div id="transition-overlay"></div>
-
-    <!-- TELA DE CONTEÚDO -->
     <section id="content-screen" class="hidden">
         <div id="background-hearts"></div>
         <div class="content-wrapper">
             <div class="left-column">
-                <!-- ÁLBUM DE FOTOS -->
                 <div class="gallery-container">
                     <div class="gallery-image-wrapper">
                         <div id="slides-container" class="slides-container">
-                            <!-- As imagens serão adicionadas aqui dinamicamente pelo JavaScript -->
-                            <!-- Deixamos um placeholder para o CSS de imagem básica -->
                             <img class="gallery-slide-image" src="" alt="Nossa Foto Anterior">
                             <img class="gallery-slide-image" src="" alt="Nossa Foto Atual">
                             <img class="gallery-slide-image" src="" alt="Nossa Foto Próxima">
@@ -53,8 +47,6 @@
                     </div>
                     <p id="photo-counter">1 / 37</p>
                 </div>
-
-                <!-- PLAYER DE MÚSICA -->
                 <div class="music-player">
                     <p id="song-title">Nossa Trilha Sonora</p>
                     <div class="progress-container" id="progress-container">
@@ -76,23 +68,17 @@
                     <audio id="audio-player"></audio>
                 </div>
             </div>
-
-            <!-- CONTAINER DAS CARTINHAS -->
             <div class="main-text-container">
                 <div id="letters-container"></div>
             </div>
         </div>
     </section>
-
-    <!-- MODAL DE FOTOS -->
     <div id="photo-modal" class="photo-modal-overlay hidden">
         <button id="modal-close" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
         <button id="modal-prev" class="modal-nav-btn">❮</button>
         <img id="modal-image" src="" alt="Foto Ampliada">
         <button id="modal-next" class="modal-nav-btn">❯</button>
     </div>
-
-    <!-- MODAL DAS CARTINHAS -->
     <div id="letter-modal" class="letter-modal-overlay hidden">
         <div class="letter-modal-content">
             <button id="modal-letter-close" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
